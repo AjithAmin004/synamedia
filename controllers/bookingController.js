@@ -28,7 +28,8 @@ module.exports.bookRoom = asyncHandler(async (req, res) => {
         let { name, mail, checkInDate, checkOutDate } = req.body;
         checkInDate = new Date(checkInDate)
         checkOutDate = new Date(checkOutDate)
-        if (checkOutDate < checkInDate || checkOutDate < new Date() || checkInDate < new Date()) {
+        const date = new Date(Date.UTC(2025, 0, 30)).toISOString();
+        if (checkOutDate < checkInDate || checkOutDate < date|| checkInDate < date) {
             return res.status(400).json({ message: 'Please provide valid dates' })
         }
         bookingSchema.parse({ name, mail, checkInDate, checkOutDate });
@@ -122,7 +123,9 @@ module.exports.modifyBooking = asyncHandler(async (req, res) => {
         newCheckOutDate = new Date(newCheckOutDate)
         modifyBookingSchema.parse({ mail, newCheckInDate, newCheckOutDate });
 
-        if (newCheckOutDate < newCheckInDate || newCheckOutDate < new Date() || newCheckInDate < new Date()) {
+        const date = new Date(Date.UTC(2025, 0, 30)).toISOString();
+
+        if (newCheckOutDate < newCheckInDate || newCheckOutDate < date || newCheckInDate < date) {
             return res.status(400).json({ message: 'Please provide valid dates' })
         }
 
