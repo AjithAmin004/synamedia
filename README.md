@@ -46,7 +46,7 @@ npm install
   "roomNumber": {
     "$numberDecimal": "100"
   },
-  "available": false
+  "available": true
 },
 {
   "_id": {
@@ -55,18 +55,40 @@ npm install
   "roomNumber": {
     "$numberDecimal": "101"
   },
-  "available": false
+  "available": true
 }]
 ```
 
 ## Routes and expected input
 
-GET: /book - pass "mail" in query
-
 POST: /book - name, mail, checkInDate, checkOutDate - pass in body and maintain proper values
 
+```json
+{
+  "name": "Ajith",
+  "mail": "test6@mail.com",
+  "checkInDate": "2025-02-21",
+  "checkOutDate": "2025-02-22"
+}
+```
+GET: /book - pass "mail" in query
+
+[127.0.0.1:3000/book/?mail=test6@mail.com]()
+
 DELETE : /book - pass "mail" in body
+```json
+{
+  "mail": "test6@mail.com"
+}
+```
 
 PUT : /book - mail, newCheckInDate, newCheckOutDate - pass in body
+```json
+{
+  "mail": "test6@mail.com",
+  "checkInDate": "2025-02-21",
+  "checkOutDate": "2025-02-22"
+}
+```
 
-GET : /viewGuests - no input
+GET : /book/viewGuests - no input
