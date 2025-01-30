@@ -28,10 +28,8 @@ module.exports.bookRoom = asyncHandler(async (req, res) => {
         let { name, mail, checkInDate, checkOutDate } = req.body;
         checkInDate = new Date(checkInDate)
         checkOutDate = new Date(checkOutDate)
-        const date = new Date(Date.UTC(2025, 0, 30)).toISOString();
-        if (checkOutDate < checkInDate || checkOutDate < date|| checkInDate < date) {
-            return res.status(400).json({ message: 'Please provide valid dates' })
-        }
+        checkOutDate.setUTCHours(23, 59, 59, 999)
+
         bookingSchema.parse({ name, mail, checkInDate, checkOutDate });
         const alreadyBooked = await Booking.findOne({ contact: mail });
         if (alreadyBooked) {
@@ -100,15 +98,11 @@ module.exports.cancelBooking = asyncHandler(async (req, res) => {
             return res.status(404).json({ message: 'Booking not found' });
         }
 
-        if (booking.checkOutDate < Date.now()) {
-            return res.status(400).json({ message: 'Booking already checked out' })
-        };
-
         const room = await Room.findOne({ roomNumber: booking.roomNumber });
         room.available = true;
         await room.save();
 
-        await booking.remove();
+        await Booking.deleteOne({ contact: booking.contact })
 
         res.json({ message: 'Booking canceled successfully', canceledBooking: booking });
     } catch (error) {
@@ -121,13 +115,8 @@ module.exports.modifyBooking = asyncHandler(async (req, res) => {
         let { mail, newCheckInDate, newCheckOutDate } = req.body;
         newCheckInDate = new Date(newCheckInDate)
         newCheckOutDate = new Date(newCheckOutDate)
+        newCheckOutDate.setUTCHours(23, 59, 59, 999)
         modifyBookingSchema.parse({ mail, newCheckInDate, newCheckOutDate });
-
-        const date = new Date(Date.UTC(2025, 0, 30)).toISOString();
-
-        if (newCheckOutDate < newCheckInDate || newCheckOutDate < date || newCheckInDate < date) {
-            return res.status(400).json({ message: 'Please provide valid dates' })
-        }
 
         const booking = await Booking.findOne({ contact: mail });
 

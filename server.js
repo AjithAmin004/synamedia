@@ -18,5 +18,3 @@ app.use(errorHandler)
 app.listen(PORT, () => {
     console.log('server is running on port', PORT)
 })
-
-//check async handler middlware n cron job
